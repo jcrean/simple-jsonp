@@ -12,9 +12,14 @@
       var script = document.createElement('script'),
         url = opts.url,
         queryParams = [],
+        that = this,
         prop,
         jsonpName,
-        docHead = document.getElementsByTagName('head')[0];
+        docHead = document.getElementsByTagName('head')[0],
+        jsonpSuccess,
+        jsonpError,
+        uninstallHandlers,
+        origCallback;
 
       if (opts.data) {
         for (prop in opts.data) {
@@ -43,28 +48,49 @@
       script.type = 'text/javascript';
       script.src  = url;
 
+      origCallback = window[jsonpName];
       window[jsonpName] = function (data) {
-        this.jsonpResponse = [data];
+        that.jsonpResponse = [data];
+      };
+
+      uninstallHandlers = function () {
+        script.onload = script.onerror = script.onreadystatechange = null;
+        that.jsonpResponse = null;
+        docHead.removeChild(script);
+        window[jsonpName] = origCallback;
+        if (that.jsonpResponse && origCallback) {
+          origCallback(that.jsonpResponse);
+        }
+      };
+
+      jsonpSuccess = function (json) {
+        debugger;
+        if (opts.success && typeof opts.success === 'function') {
+          opts.success(that.jsonpResponse[0]);
+        } else {
+          console.log('no success callback defined');
+        }
+        uninstallHandlers();
+      };
+
+      jsonpError = function (error) {
+        debugger;
+        if (opts.error && typeof opts.error === 'function') {
+          opts.error();
+        } else {
+          console.log('no success callback defined');
+        }
+        uninstallHandlers();
       };
 
       script.onload = script.onerror = script.onreadystatechange = function (res) {
-        console.log('script completed, got res: %o, readystate: %o', res, script.readystate);
         if (!script.readystate || script.readystate === 'loaded' || script.readystate === 'complete') {
-          // trigger success/error callbacks
-          if (this.jsonpResponse) {
+          if (that.jsonpResponse) {
             console.log('jsonp request successful');
-            if (opts.success && typeof opts.success === 'function') {
-              opts.success(this.jsonpResponse[0]);
-            } else {
-              console.log('no success callback defined');
-            }
+            jsonpSuccess(that.jsonpResponse);
           } else {
             console.log('jsonp failed somewheres...');
-            if (opts.error && typeof opts.error === 'function') {
-              opts.error();
-            } else {
-              console.log('no success callback defined');
-            }
+            jsonpError(res);
           }
         }
       };
