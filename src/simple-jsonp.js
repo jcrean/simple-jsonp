@@ -64,7 +64,6 @@
       };
 
       jsonpSuccess = function (json) {
-        debugger;
         if (opts.success && typeof opts.success === 'function') {
           opts.success(that.jsonpResponse[0]);
         } else {
@@ -74,7 +73,6 @@
       };
 
       jsonpError = function (error) {
-        debugger;
         if (opts.error && typeof opts.error === 'function') {
           opts.error();
         } else {
