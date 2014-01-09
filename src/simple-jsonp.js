@@ -76,13 +76,13 @@
         if (opts.error && typeof opts.error === 'function') {
           opts.error();
         } else {
-          console.log('no success callback defined');
+          console.log('no error callback defined');
         }
         uninstallHandlers();
       };
 
       script.onload = script.onerror = script.onreadystatechange = function (res) {
-        if (!script.readystate || script.readystate === 'loaded' || script.readystate === 'complete') {
+        if (!script.readyState || script.readyState === 'loaded' || script.readyState === 'complete') {
           if (that.jsonpResponse) {
             console.log('jsonp request successful');
             jsonpSuccess(that.jsonpResponse);
