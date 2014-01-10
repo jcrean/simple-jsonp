@@ -1,7 +1,7 @@
 simple-jsonp
 ============
 
-Simple, cross browser JSONP reqeusts
+Simple, cross browser JSONP requests
 
 Example:
 
