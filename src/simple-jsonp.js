@@ -20,7 +20,8 @@
         jsonpError,
         uninstallHandlers,
         origCallback,
-        done = 0;
+        done = 0,
+        jsonp = opts.jsonp || 'callback';
 
       if (opts.data) {
         for (prop in opts.data) {
@@ -36,7 +37,7 @@
         jsonpName = '__jsonp_' + this.reqCount;
       }
 
-      queryParams.unshift('callback=' + jsonpName);
+      queryParams.unshift(jsonp + '=' + jsonpName);
 
       if (url.match(/\?/)) {
         url = url + '&';
