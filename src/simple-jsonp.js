@@ -19,7 +19,8 @@
         jsonpSuccess,
         jsonpError,
         uninstallHandlers,
-        origCallback;
+        origCallback,
+        done = 0;
 
       if (opts.data) {
         for (prop in opts.data) {
@@ -58,25 +59,26 @@
         that.jsonpResponse = null;
         docHead.removeChild(script);
         window[jsonpName] = origCallback;
-        if (that.jsonpResponse && origCallback) {
-          origCallback(that.jsonpResponse);
-        }
       };
 
       jsonpSuccess = function (json) {
-        if (opts.success && typeof opts.success === 'function') {
-          opts.success(that.jsonpResponse[0]);
-        } else {
-          console.log('no success callback defined');
+        if (!(done++)) {
+          if (opts.success && typeof opts.success === 'function') {
+            opts.success(that.jsonpResponse[0]);
+          } else {
+            console.log('no success callback defined');
+          }
         }
         uninstallHandlers();
       };
 
       jsonpError = function (error) {
-        if (opts.error && typeof opts.error === 'function') {
-          opts.error();
-        } else {
-          console.log('no error callback defined');
+        if (!(done++)) {
+          if (opts.error && typeof opts.error === 'function') {
+            opts.error();
+          } else {
+            console.log('no error callback defined');
+          }
         }
         uninstallHandlers();
       };
