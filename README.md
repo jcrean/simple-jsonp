@@ -5,6 +5,7 @@ Simple, cross browser JSONP reqeusts
 
 Example:
 
+```
 JSONP.request({
   url: 'http://jsonp-enabled-host/api/endpoint',
   success: function (resp) {
@@ -14,3 +15,4 @@ JSONP.request({
     // uh-oh, jsonp request failed
   }
 })
+```
