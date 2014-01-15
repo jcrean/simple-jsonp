@@ -25,7 +25,9 @@
 
       if (opts.data) {
         for (prop in opts.data) {
-          queryParams.push(prop + '=' + encodeURIComponent(opts.data[prop]));
+          if (opts.data.hasOwnProperty(prop)) {
+            queryParams.push(prop + '=' + encodeURIComponent(opts.data[prop]));
+          }
         }
       }
 
